@@ -32,11 +32,3 @@ class Product(models.Model):
 
     def __str__(self):
         return self.name
-
-
-# django-admin startproject src .
-# ./manage.py startapp product ./src/product
-# ./manage.py runserver
-# ./manage.py makemigrations
-# ./manage.py migrate
-# sqlite3 db.sqlite3
