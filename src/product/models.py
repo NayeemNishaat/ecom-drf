@@ -34,5 +34,9 @@ class Product(models.Model):
         return self.name
 
 
+# django-admin startproject src .
+# ./manage.py startapp product ./src/product
+# ./manage.py runserver
 # ./manage.py makemigrations
 # ./manage.py migrate
+# sqlite3 db.sqlite3
