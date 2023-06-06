@@ -14,3 +14,14 @@ class BrandFactory(factory.django.DjangoModelFactory):
         model = Brand
 
     name = "test_brand"
+
+
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
+
+    name = "test_product"
+    description = "Desc"
+    is_digital = False
+    brand = factory.SubFactory(BrandFactory)
+    category = factory.SubFactory(CategoryFactory)

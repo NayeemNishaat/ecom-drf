@@ -16,4 +16,6 @@ class TestBrandModel:
 
 
 class TestProductModel:
-    pass
+    def test_str_method(self, product_factory):
+        name = product_factory(name="test_product")
+        assert name.__str__() == "test_product"
