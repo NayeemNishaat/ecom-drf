@@ -13,3 +13,4 @@ admin.site.register(Brand)
 # ./manage.py migrate
 # sqlite3 db.sqlite3
 # ./manage.py createsuperuser
+# ./manage.py spectacular --fileschema.yaml
