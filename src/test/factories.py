@@ -23,5 +23,6 @@ class ProductFactory(factory.django.DjangoModelFactory):
     name = "test_product"
     description = "Desc"
     is_digital = False
+    is_active = True
     brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
