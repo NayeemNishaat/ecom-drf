@@ -3,9 +3,11 @@ from .models import Brand, Category, Product, ProductLine
 
 
 class CategorySerializer(serializers.ModelSerializer):
+    category_name = serializers.CharField(source="name")
+
     class Meta:
         model = Category
-        fields = ["name"]
+        fields = ["category_name"]
 
 
 class BrandSerializer(serializers.ModelSerializer):
@@ -18,16 +20,26 @@ class BrandSerializer(serializers.ModelSerializer):
 class ProductLineSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductLine
-        exclude = ["id"]
+        exclude = ["id", "is_active", "product"]
         # fields = "__all__"
 
 
 class ProductSerializer(serializers.ModelSerializer):
-    brand = BrandSerializer()  # Note: Check Product Model to Know the Name
-    category = CategorySerializer()
+    brand_name = serializers.CharField(
+        source="brand.name"
+    )  # Note: Check Product Model to Know the Name
+    category_name = serializers.CharField(source="category.name")
     product_line = ProductLineSerializer(many=True)
 
     class Meta:
         model = Product
-        exclude = ("id",)
+        # exclude = ("id",)
+        fields = (
+            "name",
+            "slug",
+            "description",
+            "brand_name",
+            "category_name",
+            "product_line",
+        )
         # fields = "__all__"
