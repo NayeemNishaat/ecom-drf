@@ -1,5 +1,5 @@
 """
-URL configuration for core project.
+URL configuration for src project.
 
 The `urlpatterns` list routes URLs to views. For more information please see:
     https://docs.djangoproject.com/en/4.2/topics/http/urls/
@@ -15,8 +15,19 @@ Including another URLconf
     2. Add a URL to urlpatterns:  path('blog/', include('blog.urls'))
 """
 from django.contrib import admin
-from django.urls import path
+from django.urls import path, include
+from rest_framework.routers import DefaultRouter
+from .product import views
+from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
+
+router = DefaultRouter()
+router.register(r"category", viewset=views.CategoryViewSet)
+router.register(r"brand", viewset=views.BrandViewSet)
+router.register(r"product", viewset=views.ProductViewSet)
 
 urlpatterns = [
-    path('admin/', admin.site.urls),
+    path("admin/", admin.site.urls),
+    path("api/", include(router.urls)),
+    path("api/schema", SpectacularAPIView.as_view(), name="schema"),
+    path("api/doc", SpectacularSwaggerView.as_view(url_name="schema")),
 ]
