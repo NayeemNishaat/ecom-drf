@@ -14,3 +14,4 @@ admin.site.register(Brand)
 # sqlite3 db.sqlite3
 # ./manage.py createsuperuser
 # ./manage.py spectacular --fileschema.yaml
+# export DJANGO_SETTINGS_MODULE=src.local
