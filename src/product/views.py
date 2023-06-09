@@ -32,7 +32,7 @@ class BrandViewSet(viewsets.ViewSet):
 class ProductViewSet(
     viewsets.ViewSet
 ):  # ModelViewSet will create all CRUD APIs and ViewSet will only create the get API
-    queryset = Product.objects.all()
+    queryset = Product.objects.isActive()
     lookup_field = "slug"
 
     def retrieve(self, request, slug=None):
