@@ -1,11 +1,12 @@
 from pytest_factoryboy import register
-from .factories import CategoryFactory, BrandFactory, ProductFactory
+from .factories import CategoryFactory, BrandFactory, ProductFactory, ProductLineFactory
 from rest_framework.test import APIClient
 import pytest
 
 register(CategoryFactory)
 register(BrandFactory)
 register(ProductFactory)
+register(ProductLineFactory)
 
 
 @pytest.fixture
