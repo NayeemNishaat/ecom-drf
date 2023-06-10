@@ -24,3 +24,5 @@ admin.site.register(ProductLine)
 # ./manage.py createsuperuser
 # ./manage.py spectacular --fileschema.yaml
 # export DJANGO_SETTINGS_MODULE=src.local
+# pytest -k test_category_get
+# pytest -x

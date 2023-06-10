@@ -28,6 +28,7 @@ class OrderField(models.PositiveIntegerField):
     def pre_save(self, model_instance, add):
         if getattr(model_instance, self.attname) is None:
             qs = self.model.objects.all()
+
             try:
                 query = {
                     self.unique_for_field: getattr(
