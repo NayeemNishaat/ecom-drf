@@ -1,5 +1,7 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
+from .fields import OrderField
+from django.core.exceptions import ValidationError
 
 
 class ActiveQuerySet(models.QuerySet):
@@ -66,8 +68,15 @@ class ProductLine(models.Model):
         Product, on_delete=models.CASCADE, related_name="product_line"
     )
     is_active = models.BooleanField(default=False)
-
+    order = OrderField(unique_for_field="product", blank=True)  # type: ignore
     objects = ActiveQuerySet.as_manager()
+
+    def clean_fields(self, exclude=None):
+        super().clean_fields(exclude)
+        qs = ProductLine.objects.filter(product=self.product)
+        for obj in qs:
+            if self.id != obj.id and self.order == obj.order:  # type:ignore
+                raise ValidationError("Dupli Error")
 
     def __str__(self):
         return self.sku
