@@ -76,12 +76,12 @@ class ProductViewSet(
     @action(
         methods=["get"],
         detail=False,
-        url_path=r"(?P<category>\w+)/all",
+        url_path=r"category/(?P<cat_slug>[\w-]+)",
     )
-    def list_by_category(self, request, category=None):
+    def list_by_category_slug(self, request, cat_slug=None):
         """ViewSet for getting products by category"""
 
         serializer = ProductSerializer(
-            self.queryset.filter(category__name=category), many=True
+            self.queryset.filter(category__slug=cat_slug), many=True
         )
         return Response(serializer.data)

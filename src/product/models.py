@@ -19,6 +19,7 @@ class ActiveQuerySet(models.QuerySet):
 # Create your models here.
 class Category(MPTTModel):
     name = models.CharField(max_length=100, unique=True)
+    slug = models.SlugField(max_length=255)
     is_active = models.BooleanField(default=False)
     parent = TreeForeignKey("self", on_delete=models.PROTECT, null=True, blank=True)
 
