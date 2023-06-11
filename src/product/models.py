@@ -108,4 +108,4 @@ class ProductImage(models.Model):
         return super(ProductImage, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.url
+        return str(self.url)

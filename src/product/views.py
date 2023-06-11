@@ -39,7 +39,7 @@ class ProductViewSet(
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            self.queryset.filter(slug=slug).select_related(
+            Product.objects.filter(slug=slug).select_related(
                 "category", "brand"
             ),  # Important: Select related won't work for reverse fk relationship ("product_line") to avoid N + 1 problem we can use prefetch_related()
             many=True,

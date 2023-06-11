@@ -20,7 +20,7 @@ class BrandSerializer(serializers.ModelSerializer):
 class ProductImageSerializer(serializers.ModelSerializer):
     class Meta:
         model = ProductImage
-        exclude = ["id"]
+        exclude = ["id", "product_line"]
 
 
 class ProductLineSerializer(serializers.ModelSerializer):
@@ -35,7 +35,7 @@ class ProductSerializer(serializers.ModelSerializer):
     brand_name = serializers.CharField(
         source="brand.name"
     )  # Note: Check Product Model to Know the Name
-    category_name = serializers.CharField(source="category.name")
+    category_name = serializers.CharField(source="category.name", allow_null=True)
     product_line = ProductLineSerializer(many=True)
 
     class Meta:
