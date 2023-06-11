@@ -1,7 +1,7 @@
 from django.db import models
 from mptt.models import MPTTModel, TreeForeignKey
 from .fields import OrderField
-from django.core.exceptions import ValidationError
+from django.core.exceptions import ValidationError, ObjectDoesNotExist
 
 
 class ActiveQuerySet(models.QuerySet):
@@ -73,10 +73,13 @@ class ProductLine(models.Model):
     objects = ActiveQuerySet.as_manager()
 
     def clean(self):
-        qs = ProductLine.objects.filter(product=self.product)
-        for obj in qs:
-            if self.id != obj.id and self.order == obj.order:  # type:ignore
-                raise ValidationError("Dupli Error")
+        try:
+            qs = ProductLine.objects.filter(product=self.product)
+            for obj in qs:
+                if self.id != obj.id and self.order == obj.order:  # type:ignore
+                    raise ValidationError("Dupli Error")
+        except ObjectDoesNotExist:
+            raise ValidationError("Product is required")
 
     def save(self, *args, **kwargs):
         self.full_clean()
