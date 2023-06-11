@@ -6,3 +6,4 @@ db.sqlite3
 .coverage
 schema.yaml
 htmlcov
+.DS_store
