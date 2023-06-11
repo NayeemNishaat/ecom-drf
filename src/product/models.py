@@ -87,9 +87,8 @@ class ProductLine(models.Model):
 
 
 class ProductImage(models.Model):
-    name = models.CharField(max_length=100)
     alternative_text = models.CharField(max_length=255)
-    url = models.ImageField(upload_to=None)  # type:ignore
+    url = models.ImageField(upload_to=None, default="test.jpg")  # type:ignore
     product_line = models.ForeignKey(
         ProductLine, on_delete=models.CASCADE, related_name="product_image"
     )
@@ -106,4 +105,4 @@ class ProductImage(models.Model):
         return super(ProductImage, self).save(*args, **kwargs)
 
     def __str__(self):
-        return self.name
+        return self.url
