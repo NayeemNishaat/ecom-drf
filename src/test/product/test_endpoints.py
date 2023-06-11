@@ -37,3 +37,21 @@ class TestProductEndpoints:
 
         assert response.status_code == 200
         assert len(json.loads(response.content)) == 4
+
+    def test_product_get_by_slug(self, product_factory, api_client):
+        obj = product_factory(slug="my-slug")
+        response = api_client().get(f"{self.endpoint}{obj.slug}/")
+
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1
+
+    def test_product_get_by_category_slug(
+        self, product_factory, category_factory, api_client
+    ):
+        obj = category_factory(slug="my-cat")
+        product_factory(category=obj)
+
+        response = api_client().get(f"{self.endpoint}category/{obj.slug}/")
+
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1

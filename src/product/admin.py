@@ -1,10 +1,19 @@
 from django.contrib import admin
-from .models import Category, Brand, Product
+from .models import Category, Brand, Product, ProductLine
 
-# Register your models here.
-admin.site.register(Product)
+
+class ProductLineInline(admin.TabularInline):
+    model = ProductLine
+
+
+@admin.register(Product)
+class ProductAdmin(admin.ModelAdmin):
+    inlines = [ProductLineInline]
+
+
 admin.site.register(Category)
 admin.site.register(Brand)
+admin.site.register(ProductLine)
 
 # django-admin startproject src .
 # ./manage.py startapp product ./src/product
@@ -15,3 +24,5 @@ admin.site.register(Brand)
 # ./manage.py createsuperuser
 # ./manage.py spectacular --fileschema.yaml
 # export DJANGO_SETTINGS_MODULE=src.local
+# pytest -k test_category_get
+# pytest -x
