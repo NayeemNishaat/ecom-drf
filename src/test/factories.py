@@ -1,5 +1,5 @@
 import factory
-from ..product.models import Category, Brand, Product, ProductLine
+from ..product.models import Category, Brand, Product, ProductLine, ProductImage
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -37,3 +37,12 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     stock_quantity = 5
     is_active = True
     product = factory.SubFactory(ProductFactory)
+
+
+class ProductImageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductImage
+
+    alternative_text = "alt text"
+    url = "any.png"
+    product_line = factory.SubFactory(ProductLineFactory)

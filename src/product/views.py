@@ -9,6 +9,7 @@ from pygments.formatters import TerminalFormatter
 from pygments.lexers import SqlLexer
 from sqlparse import format
 from django.db import connection
+from django.db.models import Prefetch
 
 
 class CategoryViewSet(viewsets.ViewSet):
@@ -39,8 +40,10 @@ class ProductViewSet(
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            self.queryset.filter(slug=slug).select_related(
-                "category", "brand"
+            Product.objects.filter(slug=slug)
+            .select_related("category", "brand")
+            .prefetch_related(
+                Prefetch("product_line__product_image")
             ),  # Important: Select related won't work for reverse fk relationship ("product_line") to avoid N + 1 problem we can use prefetch_related()
             many=True,
         )
