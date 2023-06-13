@@ -1,5 +1,13 @@
 from django.contrib import admin
-from .models import Category, Brand, Product, ProductLine, ProductImage
+from .models import (
+    Category,
+    Brand,
+    Product,
+    ProductLine,
+    ProductImage,
+    AttributeValue,
+    Attribute,
+)
 from django.urls import reverse
 from django.utils.safestring import mark_safe
 
@@ -31,14 +39,20 @@ class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline]
 
 
+class AttributeValueInline(admin.TabularInline):
+    model = AttributeValue.product_name_attribute_value.through  # type:ignore
+
+
 class ProductLineAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline]
+    inlines = [ProductImageInline, AttributeValueInline]
 
 
 admin.site.register(Category)
 admin.site.register(Brand)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductLine, ProductLineAdmin)
+admin.site.register(Attribute)
+admin.site.register(AttributeValue)
 
 
 # django-admin startproject src .
