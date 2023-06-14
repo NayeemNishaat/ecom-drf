@@ -41,7 +41,7 @@ class ProductAdmin(admin.ModelAdmin):
 
 
 class AttributeValueInline(admin.TabularInline):
-    model = AttributeValue.product_name_attribute_value.through  # type:ignore
+    model = AttributeValue.product_line_attribute_value.through  # type:ignore
 
 
 class ProductLineAdmin(admin.ModelAdmin):
