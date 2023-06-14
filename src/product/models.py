@@ -150,6 +150,9 @@ class ProductLineAttributeValue(models.Model):
         self.full_clean()
         return super(ProductLineAttributeValue, self).save(*args, **kwargs)
 
+    def __str__(self):
+        return str(self.attribute_value)
+
 
 class ProductImage(models.Model):
     alternative_text = models.CharField(max_length=255)
