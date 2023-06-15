@@ -52,6 +52,7 @@ class Product(models.Model):
         "Category", null=True, blank=True, on_delete=models.SET_NULL
     )
     is_active = models.BooleanField(default=False)
+    product_type = models.ForeignKey("ProductType", on_delete=models.PROTECT)
 
     # objects = models.Manager()
     objects = ActiveQuerySet.as_manager()
@@ -93,7 +94,7 @@ class ProductLine(models.Model):
         through="ProductLineAttributeValue",
         related_name="product_line_attribute_value",
     )
-    product_type = models.ForeignKey("ProductType", on_delete=models.PROTECT)
+    # product_type = models.ForeignKey("ProductType", on_delete=models.PROTECT)
 
     objects = ActiveQuerySet.as_manager()
 

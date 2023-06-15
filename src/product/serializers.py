@@ -32,11 +32,11 @@ class ProductImageSerializer(serializers.ModelSerializer):
 
 
 class AttributeSerializer(serializers.ModelSerializer):
-    name = serializers.CharField(source="name")
+    name = serializers.CharField()
 
     class Meta:
         model = Attribute
-        fields = ("name",)
+        fields = ("name", "id")
 
 
 class AttributeValueSerializer(serializers.ModelSerializer):
@@ -82,6 +82,7 @@ class ProductSerializer(serializers.ModelSerializer):
     )  # Note: Check Product Model to Know the Name
     category_name = serializers.CharField(source="category.name", allow_null=True)
     product_line = ProductLineSerializer(many=True)
+    attribute = serializers.SerializerMethodField()
 
     class Meta:
         model = Product
@@ -93,5 +94,21 @@ class ProductSerializer(serializers.ModelSerializer):
             "brand_name",
             "category_name",
             "product_line",
+            "attribute",
         )
         # fields = "__all__"
+
+    def get_attribute(self, obj):
+        attribute = Attribute.objects.filter(product_type_attribute__product__id=obj.id)
+        return AttributeSerializer(attribute, many=True).data
+
+    def to_representation(self, instance):
+        data = super().to_representation(instance)
+        av_data = data.pop("attribute")
+        attr_values = {}
+
+        for key in av_data:  # type:ignore
+            attr_values.update({key["id"]: key["name"]})
+
+        data.update({"type_specification": attr_values})
+        return data
