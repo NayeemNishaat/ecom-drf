@@ -6,6 +6,8 @@ from ..product.models import (
     ProductLine,
     ProductImage,
     ProductType,
+    Attribute,
+    AttributeValue,
 )
 
 
@@ -23,11 +25,25 @@ class BrandFactory(factory.django.DjangoModelFactory):
     name = factory.sequence(lambda n: "Brand_%d" % n)
 
 
+class AttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attribute
+
+    name = "test_attribute"
+    description = "test_attribute_description"
+
+
 class ProductTypeFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProductType
 
-    name = "test_type"
+    name = "test_prod_type"
+
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(*extracted)  # type:ignore
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
@@ -43,6 +59,14 @@ class ProductFactory(factory.django.DjangoModelFactory):
     product_type = factory.SubFactory(ProductTypeFactory)
 
 
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    value = "attr_value"
+    attribute = factory.SubFactory(AttributeFactory)
+
+
 class ProductLineFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = ProductLine
@@ -52,6 +76,12 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     stock_quantity = 5
     is_active = True
     product = factory.SubFactory(ProductFactory)
+
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)  # type:ignore
 
 
 class ProductImageFactory(factory.django.DjangoModelFactory):
