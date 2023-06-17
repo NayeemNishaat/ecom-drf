@@ -197,3 +197,6 @@ class ProductTypeAttribute(models.Model):
 
     class Meta:
         unique_together = ("product_type", "attribute")
+
+
+# 11 6
