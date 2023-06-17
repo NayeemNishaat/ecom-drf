@@ -1,7 +1,6 @@
 from django.contrib import admin
 from .models import (
     Category,
-    Brand,
     Product,
     ProductLine,
     ProductImage,
@@ -57,7 +56,6 @@ class ProductTypeAdmin(admin.ModelAdmin):
 
 
 admin.site.register(Category)
-admin.site.register(Brand)
 admin.site.register(Product, ProductAdmin)
 admin.site.register(ProductLine, ProductLineAdmin)
 admin.site.register(Attribute)

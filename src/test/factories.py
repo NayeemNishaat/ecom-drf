@@ -1,7 +1,6 @@
 import factory
 from ..product.models import (
     Category,
-    Brand,
     Product,
     ProductLine,
     ProductImage,
@@ -17,13 +16,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 
     name = factory.sequence(lambda n: "Category_%d" % n)
     slug = factory.sequence(lambda n: "test_slug_%d" % n)
-
-
-# class BrandFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Brand
-
-#     name = factory.sequence(lambda n: "Brand_%d" % n)
 
 
 # class AttributeFactory(factory.django.DjangoModelFactory):
@@ -55,7 +47,6 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 #     description = "Desc"
 #     is_digital = False
 #     is_active = True
-#     brand = factory.SubFactory(BrandFactory)
 #     category = factory.SubFactory(CategoryFactory)
 #     product_type = factory.SubFactory(ProductTypeFactory)
 
