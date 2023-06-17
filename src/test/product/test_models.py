@@ -2,7 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from src.product.models import ProductTypeAttribute
 from django.db.utils import IntegrityError
-from src.product.models import Category
+from src.product.models import Category, Product
 
 pytestmark = pytest.mark.django_db
 
@@ -19,8 +19,8 @@ class TestCategoryModel:
             obj.full_clean()
 
     def test_slug_max_length(self, category_factory):
-        name = "x" * 256
-        obj = category_factory(slug=name)
+        slug = "x" * 256
+        obj = category_factory(slug=slug)
         with pytest.raises(ValidationError):
             obj.full_clean()
 
@@ -61,10 +61,34 @@ class TestCategoryModel:
         assert qs == 2
 
 
-# class TestProductModel:
-#     def test_str_method(self, product_factory):
-#         name = product_factory(name="test_product")
-#         assert name.__str__() == "test_product"
+class TestProductModel:
+    def test_str_method(self, product_factory):
+        name = product_factory(name="test_product")
+        assert name.__str__() == "test_product"
+
+    def test_slug_max_length(self, product_factory):
+        slug = "x" * 256
+        obj = product_factory(slug=slug)
+        with pytest.raises(ValidationError):
+            obj.full_clean()
+
+    def test_is_digital_false_dflt(self, product_factory):
+        obj = product_factory()
+        assert obj.is_digital is False
+
+    def test_category_delete_protect(self, product_factory, category_factory):
+        obj = category_factory()
+        product_factory(category=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
+    def test_return_active_prods(self, product_factory):
+        product_factory(is_active=True)
+        product_factory(is_active=False)
+        qs = Product.objects.isActive().count()  # type:ignore
+        dqs = Product.objects.count()
+        assert qs == 1
+        assert dqs == 2
 
 
 # class TestProductLineModel:

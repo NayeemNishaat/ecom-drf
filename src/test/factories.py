@@ -39,16 +39,17 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 #         self.attribute.add(*extracted)  # type:ignore
 
 
-# class ProductFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Product
+class ProductFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Product
 
-#     name = "test_product"
-#     description = "Desc"
-#     is_digital = False
-#     is_active = True
-#     category = factory.SubFactory(CategoryFactory)
-#     product_type = factory.SubFactory(ProductTypeFactory)
+    name = factory.sequence(lambda n: "test_product_%d" % n)
+    pid = factory.sequence(lambda n: "pid_%d" % n)
+    description = "Desc"
+    is_digital = False
+    is_active = True
+    category = factory.SubFactory(CategoryFactory)
+    # product_type = factory.SubFactory(ProductTypeFactory)
 
 
 # class AttributeValueFactory(factory.django.DjangoModelFactory):

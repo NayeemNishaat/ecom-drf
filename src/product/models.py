@@ -42,9 +42,9 @@ class Product(models.Model):
         "Category", null=True, blank=True, on_delete=models.PROTECT
     )
     is_active = models.BooleanField(default=False)
-    product_type = models.ForeignKey(
-        "ProductType", on_delete=models.PROTECT, related_name="product"
-    )
+    # product_type = models.ForeignKey(
+    #     "ProductType", on_delete=models.PROTECT, related_name="product"
+    # )
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     # objects = models.Manager()
