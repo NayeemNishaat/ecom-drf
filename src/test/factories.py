@@ -78,10 +78,10 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     #     self.attribute_value.add(*extracted)  # type:ignore
 
 
-# class ProductImageFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductImage
+class ProductImageFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductImage
 
-#     alternative_text = "alt text"
-#     url = "any.png"
-#     product_line = factory.SubFactory(ProductLineFactory)
+    alternative_text = "alt text"
+    url = "any.png"
+    product_line = factory.SubFactory(ProductLineFactory)

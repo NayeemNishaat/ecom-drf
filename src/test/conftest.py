@@ -4,7 +4,7 @@ from .factories import (
     # BrandFactory,
     ProductFactory,
     ProductLineFactory,
-    # ProductImageFactory,
+    ProductImageFactory,
     # AttributeFactory,
     # AttributeValueFactory,
     # ProductTypeFactory,
@@ -15,7 +15,7 @@ import pytest
 register(CategoryFactory)
 register(ProductFactory)
 register(ProductLineFactory)
-# register(ProductImageFactory)
+register(ProductImageFactory)
 # register(AttributeFactory)
 # register(AttributeValueFactory)
 # register(ProductTypeFactory)

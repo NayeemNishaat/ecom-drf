@@ -136,10 +136,22 @@ class TestProductLineModel:
         assert dqs == 2
 
 
-# class TestProductImageModel:
-#     def test_str_method(self, product_image_factory):
-#         obj = product_image_factory(order=1)
-#         assert obj.__str__() == "1"
+class TestProductImageModel:
+    def test_str_method(self, product_image_factory, product_line_factory):
+        obj = product_line_factory(sku="46JGK88")
+        obj2 = product_image_factory(order=1, product_line=obj)
+        assert obj2.__str__() == "46JGK88_img"
+
+    def test_alt_text_max_len(self, product_image_factory):
+        alternative_text = "x" * 256
+        with pytest.raises(ValidationError):
+            product_image_factory(alternative_text=alternative_text)
+
+    def test_dupli_order_value(self, product_line_factory, product_image_factory):
+        obj = product_line_factory()
+        product_image_factory(order=1, product_line=obj)
+        with pytest.raises(ValidationError):
+            product_image_factory(order=1, product_line=obj).clean()
 
 
 # class TestProductTypeModel:

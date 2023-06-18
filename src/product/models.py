@@ -168,7 +168,7 @@ class ProductImage(models.Model):
         return super(ProductImage, self).save(*args, **kwargs)
 
     def __str__(self):
-        return str(self.order)
+        return f"{self.product_line.sku}_img"
 
 
 class ProductType(models.Model):
