@@ -75,19 +75,20 @@ class AttributeValue(models.Model):
 
 class ProductLine(models.Model):
     price = models.DecimalField(decimal_places=2, max_digits=5)
-    sku = models.CharField(max_length=100)
+    sku = models.CharField(max_length=10)
     stock_quantity = models.IntegerField()
     product = models.ForeignKey(
-        Product, on_delete=models.CASCADE, related_name="product_line"
+        Product, on_delete=models.PROTECT, related_name="product_line"
     )
     is_active = models.BooleanField(default=False)
     order = OrderField(unique_for_field="product", blank=True)  # type: ignore
-    attribute_value = models.ManyToManyField(
-        AttributeValue,
-        through="ProductLineAttributeValue",
-        related_name="product_line_attribute_value",
-    )
-    # product_type = models.ForeignKey("ProductType", on_delete=models.PROTECT)
+    weight = models.FloatField()
+    # attribute_value = models.ManyToManyField(
+    #     AttributeValue,
+    #     through="ProductLineAttributeValue",
+    #     related_name="product_line_attribute_value",
+    # )
+    created_at = models.DateTimeField(auto_now_add=True, editable=False)
 
     objects = IsActiveQuerySet.as_manager()
 
