@@ -1,4 +1,4 @@
-from django.contrib import admin
+""" from django.contrib import admin
 from .models import (
     Category,
     Product,
@@ -61,7 +61,7 @@ admin.site.register(ProductLine, ProductLineAdmin)
 admin.site.register(Attribute)
 admin.site.register(ProductType, ProductTypeAdmin)
 admin.site.register(AttributeValue)
-
+ """
 
 # django-admin startproject src .
 # ./manage.py startapp product ./src/product

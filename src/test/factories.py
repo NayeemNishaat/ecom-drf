@@ -60,21 +60,22 @@ class ProductFactory(factory.django.DjangoModelFactory):
 #     attribute = factory.SubFactory(AttributeFactory)
 
 
-# class ProductLineFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductLine
+class ProductLineFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLine
 
-#     price = 10.00
-#     sku = "12bd"
-#     stock_quantity = 5
-#     is_active = True
-#     product = factory.SubFactory(ProductFactory)
+    price = 10.00
+    sku = "12bd"
+    stock_quantity = 5
+    is_active = False
+    product = factory.SubFactory(ProductFactory)
+    weight = 10
 
-#     @factory.post_generation
-#     def attribute_value(self, create, extracted, **kwargs):
-#         if not create or not extracted:
-#             return
-#         self.attribute_value.add(*extracted)  # type:ignore
+    # @factory.post_generation
+    # def attribute_value(self, create, extracted, **kwargs):
+    #     if not create or not extracted:
+    #         return
+    #     self.attribute_value.add(*extracted)  # type:ignore
 
 
 # class ProductImageFactory(factory.django.DjangoModelFactory):

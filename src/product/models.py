@@ -74,7 +74,7 @@ class AttributeValue(models.Model):
 
 
 class ProductLine(models.Model):
-    price = models.DecimalField(decimal_places=2, max_digits=5)
+    price = models.DecimalField(max_digits=5, decimal_places=2)
     sku = models.CharField(max_length=10)
     stock_quantity = models.IntegerField()
     product = models.ForeignKey(

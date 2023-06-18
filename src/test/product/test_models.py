@@ -2,7 +2,7 @@ import pytest
 from django.core.exceptions import ValidationError
 from src.product.models import ProductTypeAttribute
 from django.db.utils import IntegrityError
-from src.product.models import Category, Product
+from src.product.models import Category, Product, ProductLine
 
 pytestmark = pytest.mark.django_db
 
@@ -91,17 +91,49 @@ class TestProductModel:
         assert dqs == 2
 
 
-# class TestProductLineModel:
-#     def test_str_method(self, product_line_factory, attribute_value_factory):
-#         att = attribute_value_factory(value="test av")
-#         obj = product_line_factory.create(sku="hh7", attribute_value=(att,))
-#         assert obj.__str__() == "hh7"
+class TestProductLineModel:
+    def test_str_method(self, product_line_factory):
+        obj = product_line_factory.create(sku="hh7")
+        assert obj.__str__() == "hh7"
 
-#     def test_dupli_order_value(self, product_line_factory, product_factory):
-#         obj = product_factory()
-#         product_line_factory(order=1, product=obj)
-#         with pytest.raises(ValidationError):
-#             product_line_factory(order=1, product=obj).clean()
+    def test_dupli_order_value(self, product_line_factory, product_factory):
+        obj = product_factory()
+        product_line_factory(order=1, product=obj)
+        with pytest.raises(ValidationError):
+            product_line_factory(order=1, product=obj).clean()
+
+    def test_decimal_places(self, product_line_factory):
+        price = "1.223"
+        with pytest.raises(ValidationError):
+            product_line_factory(price=price)
+
+    def test_price_max_digits(self, product_line_factory):
+        price = "71.557"
+        with pytest.raises(ValidationError):
+            product_line_factory(price=price)
+
+    def test_sku_max_len(self, product_line_factory):
+        sku = "x" * 11
+        with pytest.raises(ValidationError):
+            product_line_factory(sku=sku)
+
+    def test_fk_product_on_delete_protect(self, product_factory, product_line_factory):
+        obj = product_factory()
+        product_line_factory(product=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
+    def test_is_active_false_dflt(self, product_line_factory):
+        obj = product_line_factory()
+        assert obj.is_active is False
+
+    def test_return_active_prodlines(self, product_line_factory):
+        product_line_factory(is_active=True)
+        product_line_factory(is_active=False)
+        qs = ProductLine.objects.isActive().count()  # type:ignore
+        dqs = ProductLine.objects.count()
+        assert qs == 1
+        assert dqs == 2
 
 
 # class TestProductImageModel:
