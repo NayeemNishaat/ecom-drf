@@ -90,6 +90,14 @@ class TestProductModel:
         assert qs == 1
         assert dqs == 2
 
+    def test_fk_product_type_delete_protect(
+        self, product_type_factory, product_factory
+    ):
+        obj = product_type_factory()
+        product_factory(product_type=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
 
 class TestProductLineModel:
     def test_str_method(self, product_line_factory):
@@ -135,6 +143,14 @@ class TestProductLineModel:
         assert qs == 1
         assert dqs == 2
 
+    def test_fk_product_type_delete_protect(
+        self, product_type_factory, product_line_factory
+    ):
+        obj = product_type_factory()
+        product_line_factory(product_type=obj)
+        with pytest.raises(IntegrityError):
+            obj.delete()
+
 
 class TestProductImageModel:
     def test_str_method(self, product_image_factory, product_line_factory):
@@ -154,15 +170,16 @@ class TestProductImageModel:
             product_image_factory(order=1, product_line=obj).clean()
 
 
-# class TestProductTypeModel:
-#     def test_str_method(self, product_type_factory, attribute_factory):
-#         test = attribute_factory(name="test")
-#         obj = product_type_factory.create(name="test type", attribute=(test,))
+class TestProductTypeModel:
+    def test_str_method(self, product_type_factory):
+        obj = product_type_factory.create(name="test type")
 
-#         x = ProductTypeAttribute.objects.get(id=1)
-#         print(x)
+        assert obj.__str__() == "test type"
 
-#         assert obj.__str__() == "test type"
+    def test_name_max_len(self, product_type_factory):
+        name = "x" * 256
+        with pytest.raises(ValidationError):
+            product_type_factory(name=name).full_clean()
 
 
 # class TestAttributeModel:

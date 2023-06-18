@@ -7,7 +7,7 @@ from .factories import (
     ProductImageFactory,
     # AttributeFactory,
     # AttributeValueFactory,
-    # ProductTypeFactory,
+    ProductTypeFactory,
 )
 from rest_framework.test import APIClient
 import pytest
@@ -18,7 +18,7 @@ register(ProductLineFactory)
 register(ProductImageFactory)
 # register(AttributeFactory)
 # register(AttributeValueFactory)
-# register(ProductTypeFactory)
+register(ProductTypeFactory)
 
 
 @pytest.fixture

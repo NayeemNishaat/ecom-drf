@@ -26,17 +26,17 @@ class CategoryFactory(factory.django.DjangoModelFactory):
 #     description = "test_attribute_description"
 
 
-# class ProductTypeFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = ProductType
+class ProductTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductType
 
-#     name = "test_prod_type"
+    name = factory.sequence(lambda n: "type_%d" % n)
 
-#     @factory.post_generation
-#     def attribute(self, create, extracted, **kwargs):
-#         if not create or not extracted:
-#             return
-#         self.attribute.add(*extracted)  # type:ignore
+    # @factory.post_generation
+    # def attribute(self, create, extracted, **kwargs):
+    #     if not create or not extracted:
+    #         return
+    #     self.attribute.add(*extracted)  # type:ignore
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
@@ -49,7 +49,7 @@ class ProductFactory(factory.django.DjangoModelFactory):
     is_digital = False
     is_active = True
     category = factory.SubFactory(CategoryFactory)
-    # product_type = factory.SubFactory(ProductTypeFactory)
+    product_type = factory.SubFactory(ProductTypeFactory)
 
 
 # class AttributeValueFactory(factory.django.DjangoModelFactory):
@@ -70,6 +70,7 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     is_active = False
     product = factory.SubFactory(ProductFactory)
     weight = 10
+    product_type = factory.SubFactory(ProductTypeFactory)
 
     # @factory.post_generation
     # def attribute_value(self, create, extracted, **kwargs):
