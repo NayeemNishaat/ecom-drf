@@ -188,13 +188,10 @@ class ProductType(models.Model):
 class ProductTypeAttribute(models.Model):
     product_type = models.ForeignKey(
         ProductType, on_delete=models.CASCADE, related_name="product_type_attribute_pt"
-    )
+    )  # Note: M2M to ProductType
     attribute = models.ForeignKey(
         Attribute, on_delete=models.CASCADE, related_name="product_type_attribute_a"
-    )
+    )  # Note: One2Many to Attribute
 
     class Meta:
         unique_together = ("product_type", "attribute")
-
-
-# 11 6
