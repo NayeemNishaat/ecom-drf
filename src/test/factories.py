@@ -1,5 +1,14 @@
 import factory
-from ..product.models import Category, Brand, Product, ProductLine, ProductImage
+from ..product.models import (
+    Category,
+    Product,
+    ProductLine,
+    ProductImage,
+    ProductType,
+    Attribute,
+    AttributeValue,
+    ProductLineAttributeValue,
+)
 
 
 class CategoryFactory(factory.django.DjangoModelFactory):
@@ -7,25 +16,55 @@ class CategoryFactory(factory.django.DjangoModelFactory):
         model = Category
 
     name = factory.sequence(lambda n: "Category_%d" % n)
+    slug = factory.sequence(lambda n: "test_slug_%d" % n)
 
 
-class BrandFactory(factory.django.DjangoModelFactory):
+class AttributeFactory(factory.django.DjangoModelFactory):
     class Meta:
-        model = Brand
+        model = Attribute
 
-    name = factory.sequence(lambda n: "Brand_%d" % n)
+    name = "test_attribute"
+    description = "test_attribute_description"
+
+
+class ProductTypeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductType
+
+    name = factory.sequence(lambda n: "type_%d" % n)
+
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(*extracted)  # type:ignore
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
     class Meta:
         model = Product
 
-    name = "test_product"
+    name = factory.sequence(lambda n: "test_product_%d" % n)
+    pid = factory.sequence(lambda n: "pid_%d" % n)
     description = "Desc"
     is_digital = False
     is_active = True
-    brand = factory.SubFactory(BrandFactory)
     category = factory.SubFactory(CategoryFactory)
+    product_type = factory.SubFactory(ProductTypeFactory)
+
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)  # type:ignore
+
+
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    value = "attr_value"
+    attribute = factory.SubFactory(AttributeFactory)
 
 
 class ProductLineFactory(factory.django.DjangoModelFactory):
@@ -35,8 +74,16 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     price = 10.00
     sku = "12bd"
     stock_quantity = 5
-    is_active = True
+    is_active = False
     product = factory.SubFactory(ProductFactory)
+    weight = 10
+    product_type = factory.SubFactory(ProductTypeFactory)
+
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)  # type:ignore
 
 
 class ProductImageFactory(factory.django.DjangoModelFactory):
@@ -45,4 +92,12 @@ class ProductImageFactory(factory.django.DjangoModelFactory):
 
     alternative_text = "alt text"
     url = "any.png"
+    product_line = factory.SubFactory(ProductLineFactory)
+
+
+class ProductLineAttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLineAttributeValue
+
+    attribute_value = factory.SubFactory(AttributeValueFactory)
     product_line = factory.SubFactory(ProductLineFactory)

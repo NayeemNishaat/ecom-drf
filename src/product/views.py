@@ -1,8 +1,8 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Brand, Category, Product
-from .serializers import BrandSerializer, CategorySerializer, ProductSerializer
+from .models import Category, Product
+from .serializers import CategorySerializer, ProductSerializer
 from drf_spectacular.utils import extend_schema
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -21,15 +21,6 @@ class CategoryViewSet(viewsets.ViewSet):
         return Response(serializer.data)
 
 
-class BrandViewSet(viewsets.ViewSet):
-    queryset = Brand.objects.all()
-
-    @extend_schema(responses=BrandSerializer)
-    def list(self, request):
-        serializer = BrandSerializer(self.queryset, many=True)
-        return Response(serializer.data)
-
-
 class ProductViewSet(
     viewsets.ViewSet
 ):  # ModelViewSet will create all CRUD APIs and ViewSet will only create the get API
@@ -41,9 +32,10 @@ class ProductViewSet(
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
             Product.objects.filter(slug=slug)
-            .select_related("category", "brand")
+            .select_related("category")
+            .prefetch_related(Prefetch("product_line__product_image"))
             .prefetch_related(
-                Prefetch("product_line__product_image")
+                Prefetch("product_line__attribute_value__attribute")
             ),  # Important: Select related won't work for reverse fk relationship ("product_line") to avoid N + 1 problem we can use prefetch_related()
             many=True,
         )

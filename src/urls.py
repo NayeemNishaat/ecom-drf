@@ -22,7 +22,6 @@ from drf_spectacular.views import SpectacularAPIView, SpectacularSwaggerView
 
 router = DefaultRouter()
 router.register(r"category", viewset=views.CategoryViewSet)
-router.register(r"brand", viewset=views.BrandViewSet)
 router.register(r"product", viewset=views.ProductViewSet)
 
 urlpatterns = [
