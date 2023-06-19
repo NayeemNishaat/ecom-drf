@@ -18,12 +18,12 @@ class CategoryFactory(factory.django.DjangoModelFactory):
     slug = factory.sequence(lambda n: "test_slug_%d" % n)
 
 
-# class AttributeFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = Attribute
+class AttributeFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = Attribute
 
-#     name = "test_attribute"
-#     description = "test_attribute_description"
+    name = "test_attribute"
+    description = "test_attribute_description"
 
 
 class ProductTypeFactory(factory.django.DjangoModelFactory):
@@ -32,11 +32,11 @@ class ProductTypeFactory(factory.django.DjangoModelFactory):
 
     name = factory.sequence(lambda n: "type_%d" % n)
 
-    # @factory.post_generation
-    # def attribute(self, create, extracted, **kwargs):
-    #     if not create or not extracted:
-    #         return
-    #     self.attribute.add(*extracted)  # type:ignore
+    @factory.post_generation
+    def attribute(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute.add(*extracted)  # type:ignore
 
 
 class ProductFactory(factory.django.DjangoModelFactory):
