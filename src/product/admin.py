@@ -1,4 +1,4 @@
-""" from django.contrib import admin
+from django.contrib import admin
 from .models import (
     Category,
     Product,
@@ -35,16 +35,22 @@ class ProductLineInline(EditLinkInline, admin.TabularInline):
 
 
 # @admin.register(Product)
-class ProductAdmin(admin.ModelAdmin):
-    inlines = [ProductLineInline]
 
 
-class AttributeValueInline(admin.TabularInline):
+class AttributeValueProductLineInline(admin.TabularInline):
     model = AttributeValue.product_line_attribute_value.through  # type:ignore
 
 
+class AttributeValueProductInline(admin.TabularInline):
+    model = AttributeValue.product_attribute_value.through  # type:ignore
+
+
+class ProductAdmin(admin.ModelAdmin):
+    inlines = [ProductLineInline, AttributeValueProductInline]
+
+
 class ProductLineAdmin(admin.ModelAdmin):
-    inlines = [ProductImageInline, AttributeValueInline]
+    inlines = [ProductImageInline, AttributeValueProductLineInline]
 
 
 class AttributeInline(admin.TabularInline):
@@ -61,7 +67,7 @@ admin.site.register(ProductLine, ProductLineAdmin)
 admin.site.register(Attribute)
 admin.site.register(ProductType, ProductTypeAdmin)
 admin.site.register(AttributeValue)
- """
+
 
 # django-admin startproject src .
 # ./manage.py startapp product ./src/product
