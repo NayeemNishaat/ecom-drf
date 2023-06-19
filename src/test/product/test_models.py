@@ -151,6 +151,24 @@ class TestProductLineModel:
         with pytest.raises(IntegrityError):
             obj.delete()
 
+    def test_dupli_attribute_insert(
+        self,
+        product_line_factory,
+        attribute_factory,
+        attribute_value_factory,
+        product_line_attribute_value_factory,
+    ):
+        obj = attribute_factory(name="shoe-color")
+        obj2 = attribute_value_factory(value="red", attribute=obj)
+        obj3 = attribute_value_factory(value="blue", attribute=obj)
+        obj4 = product_line_factory()
+        product_line_attribute_value_factory(attribute_value=obj2, product_line=obj4)
+
+        with pytest.raises(ValidationError):
+            product_line_attribute_value_factory(
+                attribute_value=obj3, product_line=obj4
+            )
+
 
 class TestProductImageModel:
     def test_str_method(self, product_image_factory, product_line_factory):
@@ -193,8 +211,13 @@ class TestAttributeModel:
             attribute_factory(name=name).full_clean()
 
 
-# class TestAttributeValueModel:
-#     def test_str_method(self, attribute_value_factory, attribute_factory):
-#         obj_a = attribute_factory(name="test_attribute")
-#         obj_b = attribute_value_factory(value="test_value", attribute=obj_a)
-#         assert obj_b.__str__() == "test_attribute - test_value"
+class TestAttributeValueModel:
+    def test_str_method(self, attribute_value_factory, attribute_factory):
+        obj_a = attribute_factory(name="test_attribute")
+        obj_b = attribute_value_factory(value="test_value", attribute=obj_a)
+        assert obj_b.__str__() == "test_attribute - test_value"
+
+    def test_name_max_len(self, attribute_value_factory):
+        value = "x" * 101
+        with pytest.raises(ValidationError):
+            attribute_value_factory(value=value).full_clean()

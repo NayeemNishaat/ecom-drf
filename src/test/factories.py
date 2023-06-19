@@ -7,6 +7,7 @@ from ..product.models import (
     ProductType,
     Attribute,
     AttributeValue,
+    ProductLineAttributeValue,
 )
 
 
@@ -51,13 +52,19 @@ class ProductFactory(factory.django.DjangoModelFactory):
     category = factory.SubFactory(CategoryFactory)
     product_type = factory.SubFactory(ProductTypeFactory)
 
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)  # type:ignore
 
-# class AttributeValueFactory(factory.django.DjangoModelFactory):
-#     class Meta:
-#         model = AttributeValue
 
-#     value = "attr_value"
-#     attribute = factory.SubFactory(AttributeFactory)
+class AttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = AttributeValue
+
+    value = "attr_value"
+    attribute = factory.SubFactory(AttributeFactory)
 
 
 class ProductLineFactory(factory.django.DjangoModelFactory):
@@ -72,11 +79,11 @@ class ProductLineFactory(factory.django.DjangoModelFactory):
     weight = 10
     product_type = factory.SubFactory(ProductTypeFactory)
 
-    # @factory.post_generation
-    # def attribute_value(self, create, extracted, **kwargs):
-    #     if not create or not extracted:
-    #         return
-    #     self.attribute_value.add(*extracted)  # type:ignore
+    @factory.post_generation
+    def attribute_value(self, create, extracted, **kwargs):
+        if not create or not extracted:
+            return
+        self.attribute_value.add(*extracted)  # type:ignore
 
 
 class ProductImageFactory(factory.django.DjangoModelFactory):
@@ -85,4 +92,12 @@ class ProductImageFactory(factory.django.DjangoModelFactory):
 
     alternative_text = "alt text"
     url = "any.png"
+    product_line = factory.SubFactory(ProductLineFactory)
+
+
+class ProductLineAttributeValueFactory(factory.django.DjangoModelFactory):
+    class Meta:
+        model = ProductLineAttributeValue
+
+    attribute_value = factory.SubFactory(AttributeValueFactory)
     product_line = factory.SubFactory(ProductLineFactory)

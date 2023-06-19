@@ -1,13 +1,13 @@
 from pytest_factoryboy import register
 from .factories import (
     CategoryFactory,
-    # BrandFactory,
     ProductFactory,
     ProductLineFactory,
     ProductImageFactory,
     AttributeFactory,
-    # AttributeValueFactory,
+    AttributeValueFactory,
     ProductTypeFactory,
+    ProductLineAttributeValueFactory,
 )
 from rest_framework.test import APIClient
 import pytest
@@ -17,7 +17,8 @@ register(ProductFactory)
 register(ProductLineFactory)
 register(ProductImageFactory)
 register(AttributeFactory)
-# register(AttributeValueFactory)
+register(AttributeValueFactory)
+register(ProductLineAttributeValueFactory)
 register(ProductTypeFactory)
 
 

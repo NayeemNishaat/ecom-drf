@@ -46,6 +46,11 @@ class Product(models.Model):
         "ProductType", on_delete=models.PROTECT, related_name="product_type"
     )
     created_at = models.DateTimeField(auto_now_add=True, editable=False)
+    attribute_value = models.ManyToManyField(
+        "AttributeValue",
+        through="ProductAttributeValue",
+        related_name="product_attribute_value",
+    )
 
     # objects = models.Manager()
     objects = IsActiveQuerySet.as_manager()
@@ -83,11 +88,11 @@ class ProductLine(models.Model):
     is_active = models.BooleanField(default=False)
     order = OrderField(unique_for_field="product", blank=True)  # type: ignore
     weight = models.FloatField()
-    # attribute_value = models.ManyToManyField(
-    #     AttributeValue,
-    #     through="ProductLineAttributeValue",
-    #     related_name="product_line_attribute_value",
-    # )
+    attribute_value = models.ManyToManyField(
+        AttributeValue,
+        through="ProductLineAttributeValue",
+        related_name="product_line_attribute_value",
+    )
     product_type = models.ForeignKey(
         "ProductType", on_delete=models.PROTECT, related_name="product_line_type"
     )
@@ -127,6 +132,7 @@ class ProductLineAttributeValue(models.Model):
     class Meta:
         unique_together = ("attribute_value", "product_line")
 
+    # Important: Preventing duplicate attribute insert
     def clean(self):
         qs = (
             ProductLineAttributeValue.objects.filter(
@@ -150,6 +156,22 @@ class ProductLineAttributeValue(models.Model):
 
     def __str__(self):
         return str(self.attribute_value)
+
+
+class ProductAttributeValue(models.Model):
+    attribute_value = models.ForeignKey(
+        AttributeValue,
+        on_delete=models.CASCADE,
+        related_name="product_attribute_value_av",
+    )
+    product = models.ForeignKey(
+        Product,
+        on_delete=models.CASCADE,
+        related_name="product_attribute_value_pl",
+    )
+
+    class Meta:
+        unique_together = ("attribute_value", "product")
 
 
 class ProductImage(models.Model):
