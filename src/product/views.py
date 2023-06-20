@@ -35,8 +35,8 @@ class ProductViewSet(
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            Product.objects.filter(slug=slug)
-            .select_related("category")
+            self.queryset.filter(slug=slug)
+            .prefetch_related(Prefetch("attribute_value__attribute"))
             .prefetch_related(Prefetch("product_line__product_image"))
             .prefetch_related(
                 Prefetch("product_line__attribute_value__attribute")
@@ -52,25 +52,25 @@ class ProductViewSet(
             serializer.data
         )  # Remark: Storing response to data so that we can measure how many queries ran.
 
-        q = list(connection.queries)
-        print(len(q))
-        for q in q:
-            print(
-                highlight(
-                    format(str(q["sql"]), reindent=True),
-                    SqlLexer(),
-                    TerminalFormatter(),
-                )
-            )
+        # q = list(connection.queries)
+        # print(len(q))
+        # for q in q:
+        #     print(
+        #         highlight(
+        #             format(str(q["sql"]), reindent=True),
+        #             SqlLexer(),
+        #             TerminalFormatter(),
+        #         )
+        #     )
 
         return data
 
-    @extend_schema(responses=ProductSerializer)
-    def list(self, request):
-        """ViewSet for viewing all products"""
+    # @extend_schema(responses=ProductSerializer)
+    # def list(self, request):
+    #     """ViewSet for viewing all products"""
 
-        serializer = ProductSerializer(self.queryset, many=True)
-        return Response(serializer.data)
+    #     serializer = ProductSerializer(self.queryset, many=True)
+    #     return Response(serializer.data)
 
     @action(
         methods=["get"],
