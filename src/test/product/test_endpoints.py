@@ -20,19 +20,19 @@ class TestCategoryEndpoints:
 class TestProductEndpoints:
     endpoint = "/api/product/"  # Lame
 
-    # def test_product_get(self, product_factory, api_client):
-    #     product_factory.create_batch(4)
-    #     response = api_client().get(self.endpoint)
+    def test_product_get(self, product_factory, api_client):
+        product_factory.create_batch(4)
+        response = api_client().get(self.endpoint)
 
-    #     assert response.status_code == 200
-    #     assert len(json.loads(response.content)) == 4
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 4
 
-    # def test_product_get_by_slug(self, product_factory, api_client):
-    #     obj = product_factory(slug="my-slug")
-    #     response = api_client().get(f"{self.endpoint}{obj.slug}/")
+    def test_product_get_by_slug(self, product_factory, api_client):
+        obj = product_factory(slug="my-slug")
+        response = api_client().get(f"{self.endpoint}{obj.slug}/")
 
-    #     assert response.status_code == 200
-    #     assert len(json.loads(response.content)) == 1
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 1
 
     def test_product_get_by_category_slug(
         self, product_factory, category_factory, api_client

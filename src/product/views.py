@@ -65,12 +65,12 @@ class ProductViewSet(
 
         return data
 
-    # @extend_schema(responses=ProductSerializer)
-    # def list(self, request):
-    #     """ViewSet for viewing all products"""
+    @extend_schema(responses=ProductSerializer)
+    def list(self, request):
+        """ViewSet for viewing all products"""
 
-    #     serializer = ProductSerializer(self.queryset, many=True)
-    #     return Response(serializer.data)
+        serializer = ProductSerializer(self.queryset, many=True)
+        return Response(serializer.data)
 
     @action(
         methods=["get"],
@@ -93,7 +93,5 @@ class ProductViewSet(
             ),
             many=True,
         )
-        # serializer = ProductSerializer(
-        #     self.queryset.filter(category__slug=cat_slug), many=True
-        # )
+
         return Response(serializer.data)
