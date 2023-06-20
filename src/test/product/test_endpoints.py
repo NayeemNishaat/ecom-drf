@@ -4,17 +4,17 @@ import json
 pytestmark = pytest.mark.django_db
 
 
-# class TestCategoryEndpoints:
-#     endpoint = "/api/category/"  # Lame
+class TestCategoryEndpoints:
+    endpoint = "/api/category/"  # Lame
 
-#     def test_category_get(self, category_factory, api_client):
-#         category_factory.create_batch(4)
-#         response = api_client().get(self.endpoint)
+    def test_category_get(self, category_factory, api_client):
+        category_factory.create_batch(4, is_active=True)
+        response = api_client().get(self.endpoint)
 
-#         print(json.loads(response.content))  # Remark: To print use pytest -s
+        print(json.loads(response.content))  # Remark: To print use pytest -s
 
-#         assert response.status_code == 200
-#         assert len(json.loads(response.content)) == 4
+        assert response.status_code == 200
+        assert len(json.loads(response.content)) == 4
 
 
 # class TestBrandEndpoints:

@@ -13,7 +13,7 @@ from django.db.models import Prefetch
 
 
 class CategoryViewSet(viewsets.ViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().isActive()  # type:ignore
 
     @extend_schema(responses=CategorySerializer)
     def list(self, request):

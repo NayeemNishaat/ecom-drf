@@ -10,11 +10,11 @@ from .models import (
 
 
 class CategorySerializer(serializers.ModelSerializer):
-    category_name = serializers.CharField(source="name")
+    category = serializers.CharField(source="name")
 
     class Meta:
         model = Category
-        fields = ["category_name"]
+        fields = ["category", "slug"]
 
 
 class ProductImageSerializer(serializers.ModelSerializer):
