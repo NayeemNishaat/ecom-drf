@@ -1,8 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from .models import Category, Product, ProductLine, ProductImage
+from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    ProductCategorySerializer,
+)
 from drf_spectacular.utils import extend_schema
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -76,7 +80,20 @@ class ProductViewSet(
     def list_by_category_slug(self, request, cat_slug=None):
         """ViewSet for getting products by category"""
 
-        serializer = ProductSerializer(
-            self.queryset.filter(category__slug=cat_slug), many=True
+        serializer = ProductCategorySerializer(
+            self.queryset.filter(category__slug=cat_slug)
+            .prefetch_related(
+                Prefetch("product_line", queryset=ProductLine.objects.order_by("order"))
+            )
+            .prefetch_related(
+                Prefetch(
+                    "product_line__product_image",
+                    queryset=ProductImage.objects.filter(order=1),
+                )
+            ),
+            many=True,
         )
+        # serializer = ProductSerializer(
+        #     self.queryset.filter(category__slug=cat_slug), many=True
+        # )
         return Response(serializer.data)
