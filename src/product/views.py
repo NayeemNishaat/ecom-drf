@@ -1,8 +1,12 @@
 from rest_framework import viewsets
 from rest_framework.response import Response
 from rest_framework.decorators import action
-from .models import Category, Product
-from .serializers import CategorySerializer, ProductSerializer
+from .models import Category, Product, ProductLine, ProductImage
+from .serializers import (
+    CategorySerializer,
+    ProductSerializer,
+    ProductCategorySerializer,
+)
 from drf_spectacular.utils import extend_schema
 from pygments import highlight
 from pygments.formatters import TerminalFormatter
@@ -13,7 +17,7 @@ from django.db.models import Prefetch
 
 
 class CategoryViewSet(viewsets.ViewSet):
-    queryset = Category.objects.all()
+    queryset = Category.objects.all().isActive()  # type:ignore
 
     @extend_schema(responses=CategorySerializer)
     def list(self, request):
@@ -31,8 +35,8 @@ class ProductViewSet(
 
     def retrieve(self, request, slug=None):
         serializer = ProductSerializer(
-            Product.objects.filter(slug=slug)
-            .select_related("category")
+            self.queryset.filter(slug=slug)
+            .prefetch_related(Prefetch("attribute_value__attribute"))
             .prefetch_related(Prefetch("product_line__product_image"))
             .prefetch_related(
                 Prefetch("product_line__attribute_value__attribute")
@@ -48,16 +52,16 @@ class ProductViewSet(
             serializer.data
         )  # Remark: Storing response to data so that we can measure how many queries ran.
 
-        q = list(connection.queries)
-        print(len(q))
-        for q in q:
-            print(
-                highlight(
-                    format(str(q["sql"]), reindent=True),
-                    SqlLexer(),
-                    TerminalFormatter(),
-                )
-            )
+        # q = list(connection.queries)
+        # print(len(q))
+        # for q in q:
+        #     print(
+        #         highlight(
+        #             format(str(q["sql"]), reindent=True),
+        #             SqlLexer(),
+        #             TerminalFormatter(),
+        #         )
+        #     )
 
         return data
 
@@ -76,7 +80,18 @@ class ProductViewSet(
     def list_by_category_slug(self, request, cat_slug=None):
         """ViewSet for getting products by category"""
 
-        serializer = ProductSerializer(
-            self.queryset.filter(category__slug=cat_slug), many=True
+        serializer = ProductCategorySerializer(
+            self.queryset.filter(category__slug=cat_slug)
+            .prefetch_related(
+                Prefetch("product_line", queryset=ProductLine.objects.order_by("order"))
+            )
+            .prefetch_related(
+                Prefetch(
+                    "product_line__product_image",
+                    queryset=ProductImage.objects.filter(order=1),
+                )
+            ),
+            many=True,
         )
+
         return Response(serializer.data)

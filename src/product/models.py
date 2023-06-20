@@ -173,6 +173,9 @@ class ProductAttributeValue(models.Model):
     class Meta:
         unique_together = ("attribute_value", "product")
 
+    def __str__(self):
+        return f"{self.product} - {self.attribute_value}"
+
 
 class ProductImage(models.Model):
     alternative_text = models.CharField(max_length=255)

@@ -47,6 +47,7 @@ class AttributeValueProductInline(admin.TabularInline):
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline, AttributeValueProductInline]
+    fk_name = "product_attribute_value"
 
 
 class ProductLineAdmin(admin.ModelAdmin):
