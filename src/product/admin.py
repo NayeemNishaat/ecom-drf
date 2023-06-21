@@ -7,8 +7,6 @@ from .models import (
     AttributeValue,
     Attribute,
     ProductType,
-    ProductAttributeValue,
-    ProductLineAttributeValue,
     ProductTypeAttribute,
 )
 from django.urls import reverse
@@ -48,14 +46,16 @@ class AttributeValueProductInline(admin.TabularInline):
     model = AttributeValue.product_attribute_value.through  # type:ignore
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
+        sub_path = request.path[: request.path.index("/change/")]  # type:ignore
+
         if db_field.name == "attribute_value":
+            product = Product.objects.get(id=sub_path.split("/")[-1])
+            print(product.product_type.attribute.all())
             kwargs["queryset"] = AttributeValue.objects.filter(
-                product_attribute_value=1
+                attribute__id__in=product.product_type.attribute.all()
             )
+
             return super().formfield_for_dbfield(db_field, request, **kwargs)
-
-
-# attribute, attribute_id, id, product_attribute_value, product_attribute_value_av, product_line_attribute_value, product_line_attribute_value_av, value
 
 
 class ProductAdmin(admin.ModelAdmin):
