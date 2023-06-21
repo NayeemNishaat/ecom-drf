@@ -34,6 +34,14 @@ class ProductLineInline(EditLinkInline, admin.TabularInline):
     model = ProductLine
     readonly_fields = ("edit",)
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "product_type":
+            sub_path = request.path[: request.path.index("/change/")]  # type:ignore
+            product = Product.objects.get(id=sub_path.split("/")[-1])
+
+            kwargs["queryset"] = ProductType.objects.filter(parent=product.product_type)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
 
 # @admin.register(Product)
 
@@ -42,13 +50,12 @@ class AttributeValueProductLineInline(admin.TabularInline):
     model = AttributeValue.product_line_attribute_value.through  # type:ignore
 
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        sub_path = request.path[: request.path.index("/change/")]  # type:ignore
-
         if db_field.name == "attribute_value":
-            product = ProductLine.objects.get(id=sub_path.split("/")[-1])
+            sub_path = request.path[: request.path.index("/change/")]  # type:ignore
+            product_line = ProductLine.objects.get(id=sub_path.split("/")[-1])
 
             kwargs["queryset"] = AttributeValue.objects.filter(
-                attribute__id__in=product.product_type.attribute.all()
+                attribute__id__in=product_line.product_type.attribute.all()
             )
 
         return super().formfield_for_dbfield(db_field, request, **kwargs)
@@ -81,6 +88,17 @@ class ProductAdmin(admin.ModelAdmin):
 
 class ProductLineAdmin(admin.ModelAdmin):
     inlines = [ProductImageInline, AttributeValueProductLineInline]
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "product_type":
+            sub_path = request.path[: request.path.index("/change/")]  # type:ignore
+            product_line = ProductLine.objects.get(id=sub_path.split("/")[-1])
+
+            kwargs["queryset"] = ProductType.objects.filter(
+                parent=product_line.product.product_type
+            )
+
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class AttributeInline(admin.TabularInline):
