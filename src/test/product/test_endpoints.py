@@ -11,7 +11,7 @@ class TestCategoryEndpoints:
         category_factory.create_batch(4, is_active=True)
         response = api_client().get(self.endpoint)
 
-        print(json.loads(response.content))  # Remark: To print use pytest -s
+        # print(json.loads(response.content))  # Remark: To print use pytest -s
 
         assert response.status_code == 200
         assert len(json.loads(response.content)) == 4
