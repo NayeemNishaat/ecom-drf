@@ -7,6 +7,9 @@ from .models import (
     AttributeValue,
     Attribute,
     ProductType,
+    ProductAttributeValue,
+    ProductLineAttributeValue,
+    ProductTypeAttribute,
 )
 from django.urls import reverse
 from django.utils.safestring import mark_safe
@@ -44,10 +47,33 @@ class AttributeValueProductLineInline(admin.TabularInline):
 class AttributeValueProductInline(admin.TabularInline):
     model = AttributeValue.product_attribute_value.through  # type:ignore
 
+    # def formfield_for_choice_field(self, db_field, request, **kwargs):
+    #     print(67777)
+    #     print(db_field)
+    #     return super().formfield_for_choice_field(db_field, request, **kwargs)
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        print(db_field)
+        kwargs["queryset"] = AttributeValue.objects.filter(id=1)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
+
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline, AttributeValueProductInline]
-    fk_name = "product_attribute_value"
+
+    # def formfield_for_choice_field(self, db_field, request, **kwargs):
+    #     print(67777)
+    #     print(db_field)
+    #     return super().formfield_for_choice_field(db_field, request, **kwargs)
+
+    # def formfield_for_manytomany(self, db_field, request, **kwargs):
+    #     if db_field.name == "attribute_value":
+    #         # kwargs["queryset"] = self.get_queryset(request).filter(id=100)
+    #         kwargs["queryset"] = AttributeValue.objects.filter(id=1)
+    #         # qs = self.get_queryset(request).filter(id=1)
+    #         # print(kwargs)
+    #         print(db_field)
+    #         # print(super().formfield_for_choice_field())
+    #         # return super().formfield_for_choice_field(db_field, request, **kwargs)
 
 
 class ProductLineAdmin(admin.ModelAdmin):
