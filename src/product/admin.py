@@ -41,6 +41,18 @@ class ProductLineInline(EditLinkInline, admin.TabularInline):
 class AttributeValueProductLineInline(admin.TabularInline):
     model = AttributeValue.product_line_attribute_value.through  # type:ignore
 
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        sub_path = request.path[: request.path.index("/change/")]  # type:ignore
+
+        if db_field.name == "attribute_value":
+            product = ProductLine.objects.get(id=sub_path.split("/")[-1])
+            print(product.product_type.attribute.all())
+            kwargs["queryset"] = AttributeValue.objects.filter(
+                attribute__id__in=product.product_type.attribute.all()
+            )
+
+            return super().formfield_for_dbfield(db_field, request, **kwargs)
+
 
 class AttributeValueProductInline(admin.TabularInline):
     model = AttributeValue.product_attribute_value.through  # type:ignore
