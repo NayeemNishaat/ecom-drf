@@ -47,33 +47,19 @@ class AttributeValueProductLineInline(admin.TabularInline):
 class AttributeValueProductInline(admin.TabularInline):
     model = AttributeValue.product_attribute_value.through  # type:ignore
 
-    # def formfield_for_choice_field(self, db_field, request, **kwargs):
-    #     print(67777)
-    #     print(db_field)
-    #     return super().formfield_for_choice_field(db_field, request, **kwargs)
     def formfield_for_dbfield(self, db_field, request, **kwargs):
-        print(db_field)
-        kwargs["queryset"] = AttributeValue.objects.filter(id=1)
-        return super().formfield_for_dbfield(db_field, request, **kwargs)
+        if db_field.name == "attribute_value":
+            kwargs["queryset"] = AttributeValue.objects.filter(
+                product_attribute_value=1
+            )
+            return super().formfield_for_dbfield(db_field, request, **kwargs)
+
+
+# attribute, attribute_id, id, product_attribute_value, product_attribute_value_av, product_line_attribute_value, product_line_attribute_value_av, value
 
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline, AttributeValueProductInline]
-
-    # def formfield_for_choice_field(self, db_field, request, **kwargs):
-    #     print(67777)
-    #     print(db_field)
-    #     return super().formfield_for_choice_field(db_field, request, **kwargs)
-
-    # def formfield_for_manytomany(self, db_field, request, **kwargs):
-    #     if db_field.name == "attribute_value":
-    #         # kwargs["queryset"] = self.get_queryset(request).filter(id=100)
-    #         kwargs["queryset"] = AttributeValue.objects.filter(id=1)
-    #         # qs = self.get_queryset(request).filter(id=1)
-    #         # print(kwargs)
-    #         print(db_field)
-    #         # print(super().formfield_for_choice_field())
-    #         # return super().formfield_for_choice_field(db_field, request, **kwargs)
 
 
 class ProductLineAdmin(admin.ModelAdmin):
