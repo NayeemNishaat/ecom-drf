@@ -46,12 +46,12 @@ class AttributeValueProductLineInline(admin.TabularInline):
 
         if db_field.name == "attribute_value":
             product = ProductLine.objects.get(id=sub_path.split("/")[-1])
-            print(product.product_type.attribute.all())
+
             kwargs["queryset"] = AttributeValue.objects.filter(
                 attribute__id__in=product.product_type.attribute.all()
             )
 
-            return super().formfield_for_dbfield(db_field, request, **kwargs)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class AttributeValueProductInline(admin.TabularInline):
@@ -62,16 +62,21 @@ class AttributeValueProductInline(admin.TabularInline):
 
         if db_field.name == "attribute_value":
             product = Product.objects.get(id=sub_path.split("/")[-1])
-            print(product.product_type.attribute.all())
+
             kwargs["queryset"] = AttributeValue.objects.filter(
                 attribute__id__in=product.product_type.attribute.all()
             )
 
-            return super().formfield_for_dbfield(db_field, request, **kwargs)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class ProductAdmin(admin.ModelAdmin):
     inlines = [ProductLineInline, AttributeValueProductInline]
+
+    def formfield_for_dbfield(self, db_field, request, **kwargs):
+        if db_field.name == "product_type":
+            kwargs["queryset"] = ProductType.objects.filter(parent=None)
+        return super().formfield_for_dbfield(db_field, request, **kwargs)
 
 
 class ProductLineAdmin(admin.ModelAdmin):
